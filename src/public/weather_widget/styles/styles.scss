@@ -1,11 +1,19 @@
-weather-widget {
-  display: inline-block;
-  margin: 15px;
-}
+@import '../../variables';
 
-.weather-widget-body {
-  width: 310px;
-  height: 160px;
+weather-widget {
+  @media (min-width: $mobile-breakpoint) {
+    display: inline-block;
+    margin: 15px;
+
+    width: 310px;
+    height: 160px;
+  }
+
+  @media (max-width: $mobile-breakpoint) {
+    display: block;
+    margin: 15px 0;
+  }
+
   overflow: hidden;
 
   background: white;
@@ -14,7 +22,9 @@ weather-widget {
   border: 1px solid #888;
   border-radius: 10px;
   box-shadow: 7px 7px 5px #777;
+}
 
+.weather-widget-body {
   text-align: left;
 
   >.title {

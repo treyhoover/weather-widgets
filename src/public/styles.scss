@@ -1,3 +1,5 @@
+@import './variables';
+
 html, body {
   box-sizing: border-box;
   height: 100%;
@@ -11,14 +13,17 @@ body {
   background: #D2D2D2;
 }
 
-.widget-container {
-  width: 100%;
-  max-width: 750px;
 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.widget-container {
+  @media (min-width: $mobile-breakpoint) {
+    width: 100%;
+    max-width: 750px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   text-align: center;
 }
