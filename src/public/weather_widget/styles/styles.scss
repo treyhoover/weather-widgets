@@ -1,6 +1,6 @@
 weather-widget {
   display: inline-block;
-  margin: 0 25px 25px 0;
+  margin: 15px;
 }
 
 .weather-widget-body {
@@ -14,6 +14,8 @@ weather-widget {
   border: 1px solid #888;
   border-radius: 10px;
   box-shadow: 7px 7px 5px #777;
+
+  text-align: left;
 
   >.title {
     white-space: nowrap;
@@ -52,7 +54,7 @@ weather-widget {
       padding: 0 5px;
 
       &:not(:last-child) {
-        border-right: 1px dotted #ccc;
+        border-right: 1px dotted #D4D4D4;
       }
 
     >.day-label, >.temperature {

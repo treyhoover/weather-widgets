@@ -1,13 +1,16 @@
 <html ng-app="app">
 <head>
     <title>Widget Demo</title>
+    <meta charset="UTF-8">
 </head>
 <body>
+<div class="widget-container">
     <weather-widget zip="22102"></weather-widget> <!-- McLean -->
     <weather-widget zip="10024"></weather-widget> <!-- NYC -->
     <weather-widget zip="90210"></weather-widget> <!-- Beverly Hills -->
     <weather-widget zip="33130"></weather-widget> <!-- Miami -->
+</div>
 
-    <script type="text/javascript" src="./dist/bundle.js" charset="utf-8"></script>
+<script type="text/javascript" src="./dist/bundle.js" charset="utf-8"></script>
 </body>
 </html>
