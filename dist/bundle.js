@@ -62,6 +62,10 @@
 
 	var app = _angular2.default.module('app', []);
 
+	app.config(function ($compileProvider) {
+	  $compileProvider.debugInfoEnabled(false);
+	});
+
 	(0, _weather_widget2.default)(app);
 
 /***/ },
@@ -30877,11 +30881,20 @@
 
 	var _weather_widget2 = _interopRequireDefault(_weather_widget);
 
+	var _weather_data = __webpack_require__(11);
+
+	var _weather_data2 = _interopRequireDefault(_weather_data);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var weatherWidget = angular.module('weatherWidget', []);
+	var _module = angular.module('weatherWidget', []);
 
-	(0, _weather_widget2.default)(weatherWidget);
+	_module.config(function ($compileProvider) {
+	  $compileProvider.debugInfoEnabled(false);
+	});
+
+	(0, _weather_widget2.default)(_module);
+	(0, _weather_data2.default)(_module);
 
 /***/ },
 /* 8 */
@@ -30918,7 +30931,7 @@
 
 
 	// module
-	exports.push([module.id, "", ""]);
+	exports.push([module.id, "weather-widget {\n  display: inline-block;\n  margin: 0 25px 25px 0; }\n\n.weather-widget-body {\n  width: 310px;\n  height: 160px;\n  overflow: hidden;\n  background: white;\n  padding: 15px;\n  border: 1px solid #888;\n  border-radius: 10px;\n  box-shadow: 7px 7px 5px #777; }\n  .weather-widget-body > .title {\n    white-space: nowrap;\n    overflow: hidden;\n    width: 100%;\n    text-overflow: ellipsis;\n    font-size: 1.5em;\n    margin: 0 0 5px 0; }\n  .weather-widget-body > .current-condition {\n    margin-bottom: 5px; }\n    .weather-widget-body > .current-condition > .temperature {\n      display: inline-block;\n      font-size: 5em; }\n    .weather-widget-body > .current-condition > .description {\n      display: inline-block; }\n      .weather-widget-body > .current-condition > .description > img {\n        display: block; }\n      .weather-widget-body > .current-condition > .description > .current-condition-label {\n        font-size: .8em; }\n  .weather-widget-body > .five-day-forecast > .day {\n    box-sizing: border-box;\n    display: inline-block;\n    width: 20%;\n    text-align: center;\n    padding: 0 5px; }\n    .weather-widget-body > .five-day-forecast > .day:not(:last-child) {\n      border-right: 1px dotted #ccc; }\n    .weather-widget-body > .five-day-forecast > .day > .day-label, .weather-widget-body > .five-day-forecast > .day > .temperature {\n      display: block; }\n    .weather-widget-body > .five-day-forecast > .day > .temperature {\n      font-size: .8em; }\n", ""]);
 
 	// exports
 
@@ -30935,9 +30948,47 @@
 
 	exports.default = function (module) {
 	  module.component('weatherWidget', {
-	    controller: function controller() {
-	      console.log('weather widget!');
-	    }
+	    bindings: {
+	      zip: '@'
+	    },
+	    controller: function weatherWidgetCtrl(WeatherDataService) {
+	      var _this = this;
+
+	      this.initialized = false;
+
+	      WeatherDataService.getForecast(this.zip).then(function (results) {
+	        _this.imgSrc = angular.element(results.description)[0].src;
+	        _this.city = results.title.match(/(Conditions for )(.+?)( at .*)/)[2];
+	        _this.condition = results.condition;
+	        _this.forecast = results.forecast;
+
+	        _this.initialized = true;
+	      });
+	    },
+	    template: '\n      <div class=\'weather-widget-body\' ng-show="$ctrl.initialized">\n        <p class="title">{{$ctrl.city}}</p>\n        <section class="current-condition">\n          <span class="temperature">{{$ctrl.condition.temp}}&deg;</span>\n          <span class="description">\n            <img src="" ng-src="{{$ctrl.imgSrc}}">\n            <span class="current-condition-label">{{$ctrl.condition.text}}</span>\n          </span>\n        </section>\n        <section class="five-day-forecast">\n          <div class="day" ng-repeat="day in $ctrl.forecast">\n            <span class="day-label">{{day.day}}</span>\n            <span class="temperature">{{day.low}}&deg; / {{day.high}}&deg;</span>\n          </div>\n        </section>\n      </div>\n    '
+	  });
+	};
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (module) {
+	  module.service('WeatherDataService', function ($http) {
+	    this.getForecast = function () {
+	      var zipcode = arguments.length <= 0 || arguments[0] === undefined ? 22102 : arguments[0];
+
+	      var query = encodeURIComponent('select item from weather.forecast where location="' + zipcode + '"');
+	      return $http.get('http://query.yahooapis.com/v1/public/yql?q=' + query + '&format=json').then(function (res) {
+	        return res.data.query.results.channel.item;
+	      });
+	    };
 	  });
 	};
 
